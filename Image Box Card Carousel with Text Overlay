@@ -1,0 +1,85 @@
+CSS code snippet on Testimonial Carousel Widget:
+
+
+selector{
+    --radius: 25px;
+    --height: 550px;
+    --overlay: 0.75;
+}
+
+selector .swiper-slide{
+    display: flex;
+    align-items: flex-end;
+    border-radius: var(--radius);
+    height: var(--height);
+}
+selector .swiper-slide:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgb(0,0,0);
+    background: linear-gradient(20deg, rgba(0,0,0,var(--overlay)) 0%, rgba(0,0,0,0) 100%);
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    
+}
+selector .elementor-testimonial__footer{
+    display: block;
+}
+selector img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+}
+selector .elementor-testimonial__cite{
+    z-index: 2;
+    position: relative;
+}
+selector .elementor-testimonial__name{
+    margin-bottom: 10px;
+}
+selector .elementor-swiper-button-prev,
+selector .elementor-swiper-button-next{
+    display: none;
+}
+
+
+@media (max-width: 1024px){
+selector{
+    --height: 370px;
+}
+}
+@media (max-width: 767px){
+selector .elementor-main-swiper{
+    width: 100% !important;
+}
+}
+
+JavaScript code snippet for Left/Right Navigation:
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+var $ = jQuery
+$(document).ready(function(){
+    
+    $('.card-carousel .card-prev').on('click', function(){
+        
+        $(this).closest('.card-carousel').find('.elementor-swiper-button-prev').trigger('click')
+        $(this).closest('.card-carousel').find('.swiper-container').trigger('mouseleave')
+    })
+    
+    $('.card-carousel .card-next').on('click', function(){
+        $(this).closest('.card-carousel').find('.elementor-swiper-button-next').trigger('click')
+        $(this).closest('.card-carousel').find('.swiper-container').trigger('mouseleave')
+    })
+    
+    $('.card-carousel .card-prev a, .card-carousel .card-next a').on('click', function(e){
+        e.preventDefault()
+    })
+})
+</script>
