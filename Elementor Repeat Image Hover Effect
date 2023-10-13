@@ -1,0 +1,178 @@
+JavaScript Code Snippet for Repeat Image Hover Effect:<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+var $ = jQuery,
+    defaultValue = {
+        repeat: 4,
+        speed: 200,
+        squeeze: false
+    }
+
+$(document).ready(function(){
+
+$('.mdw-repeat-image').each(function(){
+    
+    var $this = $(this),
+    repeat = $this.css('--repeat') ? $this.css('--repeat').trim() : defaultValue.repeat,
+    background = $this.find('img').eq(0).attr('src'),
+    speed = $this.css('--speed') ? $this.css('--speed') : defaultValue.speed,
+    squeeze = $this.css('--squeeze'),
+    pause = []
+
+    if( squeeze ){
+    	if( squeeze.trim() == 'x' ){
+    		squeeze = 'x'
+    	}else if( squeeze.trim() == 'y' ){
+    		squeeze = 'y'
+    	}else{
+    		squeeze = false
+    	}
+    }else{
+    	squeeze = defaultValue.squeeze
+    }
+
+    pause[0] = 2
+    
+    for(var i = 0; i < repeat; i++){
+        $this.find('img').eq(0).after('<span class="repeated-image"></span>')
+        pause[i+1] = 1
+    }
+    $this.find('.repeated-image').eq(i-1).after('<span class="repeated-image-last"></span>')
+
+    var images = $this.find('.repeated-image'),
+        len = images.length
+
+
+    $this.find('.repeated-image').css('background-image', 'url(' + background + ')' )
+    $this.find('.repeated-image-last').css('background-image', 'url(' + background + ')' )
+
+    var animation = [],
+    index = len,
+    entranceIndex
+
+    $this.hover(function(){
+        $this.find('.repeated-image-last').addClass('hide')
+        entranceIndex = index--
+        images.each(function(i){
+            clearTimeout(animation[i])
+        })
+        images.each(function(i){
+            var $this2 = $(this)
+            if(i > index) return
+            animation[i] = setTimeout(function(){
+                $({ n: pause[i+1] }).animate({ n: 0 }, {
+                    duration: 500,
+                    step: function(now, fx) {
+                        var x = squeeze == 'x' ? 1 : now,
+                        	y = squeeze == 'y' ? 1 : now
+                        $this2.css('transform','scaleX('+x+') scaleY('+y+')')
+                        pause[i+1] = now
+                    }
+                },'linear')
+                if(index == 0) {
+                    $({ n: pause[i] }).animate({ n: 1 }, {
+                        duration: 500,
+                        step: function(now, fx) {
+                            var x = squeeze == 'x' ? 1 : now,
+                        		y = squeeze == 'y' ? 1 : now
+                            $this.find('img').eq(0).css('transform','scaleX('+x+') scaleY('+y+')')
+                            pause[i] = now
+                        }
+                    },'linear')
+                }
+                index--
+                
+            },speed*(entranceIndex - i - 1))
+        
+        })
+    },function(){
+        entranceIndex = index++
+        images.each(function(i){
+            clearTimeout(animation[i])
+        })
+        images.each(function(i){
+            var $this2 = $(this)
+            if(i < index) return
+            animation[i] = setTimeout(function(){
+                $({ n: pause[i+1] }).animate({ n: 1 }, {
+                    duration: 500,
+                    step: function(now, fx) {
+                        var x = squeeze == 'x' ? 1 : now,
+                        	y = squeeze == 'y' ? 1 : now
+                        $this2.css('transform','scaleX('+x+') scaleY('+y+')')
+                        pause[i+1] = now
+                    }
+                },'linear')
+                if(index == 0) {
+                    $({ n: pause[i] }).animate({ n: 2 }, {
+                        duration: 500,
+                        step: function(now, fx) {
+                            var x = squeeze == 'x' ? 1 : now,
+                        		y = squeeze == 'y' ? 1 : now
+                            $this.find('img').eq(0).css('transform','scaleX('+x+') scaleY('+y+')')
+                            pause[i] = now
+                        }
+                    },'linear')
+                }
+                index++
+            },speed*(i - entranceIndex - 1))
+            
+        })
+    })
+})
+})
+
+function imageIssueFix(){
+    $('.repeated-image-last').removeClass('hide')
+}
+
+$(window).on('load resize', function(){
+    
+    $('.mdw-repeat-image').each(function(){
+        var radius = $(this).find('img').eq(0).css('border-radius')
+        $(this).css('--radius', radius)
+    })
+    imageIssueFix()
+})
+
+$(window).focus(function(){
+    imageIssueFix()
+})
+$(window).blur(function(){
+    imageIssueFix()
+})
+</script>
+
+CSS Code Snippet for Repeat Image Hover Effect:
+selector{
+    --repeat: 3;
+    --speed: 130;
+    --direction: center;
+    --squeeze: none;
+}
+selector .elementor-widget-container{
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius,0);
+}
+selector img{
+    transform-origin: var(--direction, center);
+}
+selector .repeated-image,
+selector .repeated-image-last{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-size: cover !important;
+    background-position: center;
+    border-radius: var(--radius,0);
+    transform-origin: var(--direction, center);
+}
+selector .repeated-image-last{
+    z-index: 100;
+}
+selector .repeated-image-last.hide{
+    display: none;
+}
