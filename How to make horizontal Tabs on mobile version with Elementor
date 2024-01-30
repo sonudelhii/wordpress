@@ -1,0 +1,11 @@
+media (min-width: 320px) {
+  #m-tabs .elementor-tabs-wrapper {
+    display: flex;
+        flex-direction: row;
+  }
+}
+@media (min-width: 320px) {
+  #m-tabs .elementor-tab-mobile-title {
+    display: none;
+  }
+}
